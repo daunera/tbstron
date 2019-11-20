@@ -15,21 +15,60 @@ public class DBConnector : MonoBehaviour
         ConnectionString = $@"Data Source={DBPath};Version=3;";
         if (!Directory.Exists(Directory.GetParent(DBPath).ToString()))
         {
-            Directory.CreateDirectory(Directory.GetParent(DBPath).ToString());
+            Directory.CreateDirectory(Directory.GetParent(DBPath).ToString());            
         }
+        if (!File.Exists(DBPath))
+        {
+            CreaterDataBase();
+        }
+    }
 
+    private void CreaterDataBase()
+    {
         using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
         {
             connection.Open();
-            using (SQLiteCommand command = connection.CreateCommand())
-            {
 
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = $"CREATE TABLE IF NOT EXISTS {Player.TableName} ( " +
+            string querry = $"CREATE TABLE IF NOT EXISTS {Player.TableName} ( " +
                                   "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                   "  'name' TEXT NOT NULL " +
                                   ");";
+            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+            {
+                command.ExecuteNonQuery();
+            }
 
+            querry = $"CREATE TABLE IF NOT EXISTS {Achievement.TableName_Template} ( " +
+                      "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                      "  'name' TEXT NOT NULL, " +
+                      "  'text' TEXT NOT NULL, " +
+                      "  'treshold' INTEGER NOT NULL " +
+                      ");";
+            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+
+            querry = $"INSERT INTO {Achievement.TableName_Template} (Name, Text, Treshold) Values(@name, @text, @treshold)";
+            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+            {
+                command.Prepare();
+                command.Parameters.AddWithValue("@name", "Achievement1");
+                command.Parameters.AddWithValue("@text", "Achievement1 text");
+                command.Parameters.AddWithValue("@treshold", 10);
+                command.ExecuteNonQuery();
+            }
+
+            querry = $"CREATE TABLE IF NOT EXISTS {Achievement.TableName_Values} ( " +
+                      "  'playerId' INTEGER NOT NULL, " +
+                      "  'achievementId' INTEGER NOT NULL, " +
+                      "  'progress' INTEGER NOT NULL DEFAULT 0, " +
+                      "  PRIMARY KEY('playerId', 'achievementId'), " +
+                      $"  FOREIGN KEY('playerId') REFERENCES {Player.TableName}('id'), " +
+                      $"  FOREIGN KEY('achievementId') REFERENCES {Achievement.TableName_Template}('id') " +
+                      ");";
+            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+            {
                 command.ExecuteNonQuery();
             }
         }
@@ -41,46 +80,7 @@ public class DBConnector : MonoBehaviour
         {
             connection.Open();
 
-            bool playerNameExist = false;
-            DataTable dt = new DataTable();
-
-            string querry = $"SELECT * from {Player.TableName} WHERE NAME LIKE @name LIMIT 1";
-            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
-            {
-                command.Prepare();
-                command.Parameters.AddWithValue("@name", playerName);
-
-                using (SQLiteDataReader dr = command.ExecuteReader())
-                {
-                    playerNameExist = dr.HasRows;
-                    dt.Load(dr);
-                }
-            }
-
-            if (!playerNameExist)
-            {
-                querry = $"INSERT INTO {Player.TableName} (Name) Values(@name)";
-                using (SQLiteCommand command = new SQLiteCommand(querry, connection))
-                {
-                    command.Prepare();
-                    command.Parameters.AddWithValue("@name", playerName);
-                    command.ExecuteNonQuery();
-                }
-
-                querry = $"SELECT * from {Player.TableName} WHERE NAME LIKE @name";
-                using (SQLiteCommand command = new SQLiteCommand(querry, connection))
-                {
-                    command.Prepare();
-                    command.Parameters.AddWithValue("@name", playerName);
-
-                    using (SQLiteDataReader dr = command.ExecuteReader())
-                    {
-                        dt.Load(dr);
-                    }
-                }
-            }
-
-            Player = new Player(dt.Rows[0]);
+            Player = new Player(connection, playerName);
         }
 
         return Player;

@@ -60,8 +60,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\DBManagement\AchievementBehaviour.cs" />
     <Compile Include="Assets\Scripts\DBManagement\DBConnector.cs" />
     <Compile Include="Assets\Scripts\DBManagement\DDOL.cs" />
+    <Compile Include="Assets\Scripts\DBManagement\Model\Achievement.cs" />
     <Compile Include="Assets\Scripts\DBManagement\Model\Player.cs" />
     <Compile Include="Assets\Scripts\MainMenu\MenuManager.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
