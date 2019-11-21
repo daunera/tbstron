@@ -64,7 +64,13 @@
     <Compile Include="Assets\Scripts\DBManagement\DBConnector.cs" />
     <Compile Include="Assets\Scripts\DBManagement\DDOL.cs" />
     <Compile Include="Assets\Scripts\DBManagement\Model\Achievement.cs" />
+    <Compile Include="Assets\Scripts\DBManagement\Model\Character.cs" />
+    <Compile Include="Assets\Scripts\DBManagement\Model\Enemy.cs" />
     <Compile Include="Assets\Scripts\DBManagement\Model\Player.cs" />
+    <Compile Include="Assets\Scripts\GameManagement\CharacterManager.cs" />
+    <Compile Include="Assets\Scripts\GameManagement\PlayerManager.cs" />
+    <Compile Include="Assets\Scripts\MainMenu\CharacterSelector.cs" />
+    <Compile Include="Assets\Scripts\MainMenu\CharacterSelectorWindow.cs" />
     <Compile Include="Assets\Scripts\MainMenu\MenuManager.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/Program Files/Tron/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

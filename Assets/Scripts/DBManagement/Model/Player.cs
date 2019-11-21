@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Linq;
 using UnityEngine;
 
 public class Player
 {
-    public static string TableName = "Players";
+    public const string TableName = "Players";
 
     public int Id { get; set; }
 
@@ -52,7 +53,7 @@ public class Player
         }
 
         DataTable dt = new DataTable();
-        querry = $"SELECT id from {Achievement.TableName_Template}";
+        querry = $"SELECT id from {Achievement.TableName}";
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
             using (SQLiteDataReader dr = command.ExecuteReader())
@@ -93,7 +94,7 @@ public class Player
         }
 
         dt = new DataTable();
-        querry = $"SELECT * from {Achievement.TableName_Template} a LEFT JOIN {Achievement.TableName_Values} b ON a.id = b.AchievementId where b.PlayerId = @playerId";
+        querry = $"SELECT * from {Achievement.TableName} a LEFT JOIN {Achievement.TableName_Values} b ON a.id = b.AchievementId where b.PlayerId = @playerId";
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
             command.Prepare();
@@ -108,6 +109,14 @@ public class Player
                 }
             }
         }
+
+        CharacterManager.Instance.LoadUnlockedCharacters(connection, CompletedAchievements());
+        CharacterManager.Instance.LoadUnlockedEnemies(connection, CompletedAchievements());
+    }
+
+    private List<Achievement> CompletedAchievements()
+    {
+        return Achievements.Where(x => x.Progress >= x.Treshold).ToList();
     }
 
     public void Save(SQLiteConnection connection)

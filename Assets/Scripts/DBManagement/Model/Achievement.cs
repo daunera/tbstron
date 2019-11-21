@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class Achievement
 {
-    public static string TableName_Template = "Achievements_Template";
-    public static string TableName_Values = "Achievements_Values";
+    public const string TableName = "Achievements_Template";
+    public const string TableName_Values = "Achievements_Values";
 
     public int Id { get; set; }
     public string Name { get; set; }
     public string Text { get; set; }
-    private int Progress { get; set; }
-    private int Treshold { get; set; }
+    public int Progress { get; set; }
+    public int Treshold { get; set; }
 
     public string ProgressText { get { return Progress < Treshold ? $"{Progress} / {Treshold}" : "Completed"; } }
 

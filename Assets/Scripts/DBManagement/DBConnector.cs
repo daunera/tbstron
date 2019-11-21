@@ -7,7 +7,6 @@ using System;
 public class DBConnector : MonoBehaviour
 {
     private static string ConnectionString;
-    public static Player Player;
 
     void Awake()
     {
@@ -38,51 +37,166 @@ public class DBConnector : MonoBehaviour
                 command.ExecuteNonQuery();
             }
 
-            querry = $"CREATE TABLE IF NOT EXISTS {Achievement.TableName_Template} ( " +
+            CreateAchievements(connection);
+
+            CreateCharacters(connection);
+
+            CreateEnemies(connection);
+        }
+    }
+
+    private void CreateAchievements(SQLiteConnection connection)
+    {
+        string querry = $"CREATE TABLE IF NOT EXISTS {Achievement.TableName} ( " +
                       "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
                       "  'name' TEXT NOT NULL, " +
                       "  'text' TEXT NOT NULL, " +
                       "  'treshold' INTEGER NOT NULL " +
                       ");";
-            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
-            {
-                command.ExecuteNonQuery();
-            }
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.ExecuteNonQuery();
+        }
 
-            querry = $"INSERT INTO {Achievement.TableName_Template} (Name, Text, Treshold) Values(@name, @text, @treshold)";
-            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
-            {
-                command.Prepare();
-                command.Parameters.AddWithValue("@name", "Achievement1");
-                command.Parameters.AddWithValue("@text", "Achievement1 text");
-                command.Parameters.AddWithValue("@treshold", 10);
-                command.ExecuteNonQuery();
-            }
+        querry = $"CREATE TABLE IF NOT EXISTS {Achievement.TableName_Values} ( " +
+          "  'playerId' INTEGER NOT NULL, " +
+          "  'achievementId' INTEGER NOT NULL, " +
+          "  'progress' INTEGER NOT NULL DEFAULT 0, " +
+          "  PRIMARY KEY('playerId', 'achievementId'), " +
+          $"  FOREIGN KEY('playerId') REFERENCES {Player.TableName}('id'), " +
+          $"  FOREIGN KEY('achievementId') REFERENCES {Achievement.TableName}('id') " +
+          ");";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.ExecuteNonQuery();
+        }
 
-            querry = $"CREATE TABLE IF NOT EXISTS {Achievement.TableName_Values} ( " +
-                      "  'playerId' INTEGER NOT NULL, " +
-                      "  'achievementId' INTEGER NOT NULL, " +
-                      "  'progress' INTEGER NOT NULL DEFAULT 0, " +
-                      "  PRIMARY KEY('playerId', 'achievementId'), " +
-                      $"  FOREIGN KEY('playerId') REFERENCES {Player.TableName}('id'), " +
-                      $"  FOREIGN KEY('achievementId') REFERENCES {Achievement.TableName_Template}('id') " +
-                      ");";
-            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
-            {
-                command.ExecuteNonQuery();
-            }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold) Values(@name, @text, @treshold)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Achievement1");
+            command.Parameters.AddWithValue("@text", "Achievement1 text");
+            command.Parameters.AddWithValue("@treshold", 1);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold) Values(@name, @text, @treshold)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Achievement2");
+            command.Parameters.AddWithValue("@text", "Achievement2 text");
+            command.Parameters.AddWithValue("@treshold", 10);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold) Values(@name, @text, @treshold)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Achievement3");
+            command.Parameters.AddWithValue("@text", "Achievement3 text");
+            command.Parameters.AddWithValue("@treshold", 100);
+            command.ExecuteNonQuery();
         }
     }
 
-    public static Player SetPlayer(string playerName)
+    private void CreateCharacters(SQLiteConnection connection)
+    {
+        string querry = $"CREATE TABLE IF NOT EXISTS {Character.TableName} ( " +
+                      "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                      "  'name' TEXT NOT NULL, " +
+                      "  'color' TEXT NOT NULL, " +
+                      "  'achievementid' INTEGER,  " +
+                      $"  FOREIGN KEY('achievementid') REFERENCES {Achievement.TableName}('id')" +
+                      ");";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Character.TableName} (Name, color, achievementid) Values(@name, @color, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "FriendOBot");
+            command.Parameters.AddWithValue("@color", "lightblue");
+            command.Parameters.AddWithValue("@achievementid", null);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Character.TableName} (Name, color, achievementid) Values(@name, @color, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Flamethrower");
+            command.Parameters.AddWithValue("@color", "red");
+            command.Parameters.AddWithValue("@achievementid", null);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Character.TableName} (Name, color, achievementid) Values(@name, @color, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "MoonMoon");
+            command.Parameters.AddWithValue("@color", "green");
+            command.Parameters.AddWithValue("@achievementid", 1);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Character.TableName} (Name, color, achievementid) Values(@name, @color, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Assaultron");
+            command.Parameters.AddWithValue("@color", "yellow");
+            command.Parameters.AddWithValue("@achievementid", 2);
+            command.ExecuteNonQuery();
+        }
+        querry = $"INSERT INTO {Character.TableName} (Name, color, achievementid) Values(@name, @color, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Obliterator");
+            command.Parameters.AddWithValue("@color", "purple");
+            command.Parameters.AddWithValue("@achievementid", 3);
+            command.ExecuteNonQuery();
+        }
+    }
+
+    private void CreateEnemies(SQLiteConnection connection)
+    {
+        string querry = $"CREATE TABLE IF NOT EXISTS {Enemy.TableName} ( " +
+              "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+              "  'name' TEXT NOT NULL, " +
+              "  'achievementid' INTEGER,  " +
+              $"  FOREIGN KEY('achievementid') REFERENCES {Achievement.TableName}('id')" +
+              ");";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Enemy.TableName} (Name, achievementid) Values(@name, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "SimpleAi");
+            command.Parameters.AddWithValue("@achievementid", null);
+            command.ExecuteNonQuery();
+        }
+    }
+
+    public static void SetPlayer(string playerName)
     {
         using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
         {
             connection.Open();
 
-            Player = new Player(connection, playerName);
+            PlayerManager.Instance.Player = new Player(connection, playerName);
         }
-
-        return Player;
     }
 }
