@@ -143,7 +143,7 @@ public class DBConnector : MonoBehaviour
             command.Prepare();
             command.Parameters.AddWithValue("@name", "MoonMoon");
             command.Parameters.AddWithValue("@color", "green");
-            command.Parameters.AddWithValue("@achievementid", 1);
+            command.Parameters.AddWithValue("@achievementid", null);
             command.ExecuteNonQuery();
         }
 
@@ -185,6 +185,15 @@ public class DBConnector : MonoBehaviour
         {
             command.Prepare();
             command.Parameters.AddWithValue("@name", "SimpleAi");
+            command.Parameters.AddWithValue("@achievementid", null);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Enemy.TableName} (Name, achievementid) Values(@name, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "MediumAi");
             command.Parameters.AddWithValue("@achievementid", null);
             command.ExecuteNonQuery();
         }
