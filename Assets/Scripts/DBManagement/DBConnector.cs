@@ -28,20 +28,29 @@ public class DBConnector : MonoBehaviour
         {
             connection.Open();
 
-            string querry = $"CREATE TABLE IF NOT EXISTS {Player.TableName} ( " +
-                                  "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                  "  'name' TEXT NOT NULL " +
-                                  ");";
-            using (SQLiteCommand command = new SQLiteCommand(querry, connection))
-            {
-                command.ExecuteNonQuery();
-            }
+            CreatePlayers(connection);
 
             CreateAchievements(connection);
 
             CreateCharacters(connection);
 
             CreateEnemies(connection);
+
+            CreateMaps(connection);
+        }
+    }
+
+    
+
+    private void CreatePlayers(SQLiteConnection connection)
+    {
+        string querry = $"CREATE TABLE IF NOT EXISTS {Player.TableName} ( " +
+                                  "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                  "  'name' TEXT NOT NULL " +
+                                  ");";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.ExecuteNonQuery();
         }
     }
 
@@ -194,6 +203,46 @@ public class DBConnector : MonoBehaviour
         {
             command.Prepare();
             command.Parameters.AddWithValue("@name", "MediumAi");
+            command.Parameters.AddWithValue("@achievementid", null);
+            command.ExecuteNonQuery();
+        }
+    }
+
+    private void CreateMaps(SQLiteConnection connection)
+    {
+        string querry = $"CREATE TABLE IF NOT EXISTS {Map.TableName} ( " +
+                      "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                      "  'name' TEXT NOT NULL, " +
+                      "  'height' INTEGER NOT NULL, " +
+                      "  'width' INTEGER NOT NULL, " +
+                      "  'achievementid' INTEGER,  " +
+                      $"  FOREIGN KEY('achievementid') REFERENCES {Achievement.TableName}('id')" +
+                      ");";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Map.TableName} (Name, height, width, achievementid)" +
+            $" Values(@name, @height, @width, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Basic Map");
+            command.Parameters.AddWithValue("@height", 10);
+            command.Parameters.AddWithValue("@width", 10);
+            command.Parameters.AddWithValue("@achievementid", null);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Map.TableName} (Name, height, width, achievementid)" +
+            $" Values(@name, @height, @width, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Basic Walls Map");
+            command.Parameters.AddWithValue("@height", 10);
+            command.Parameters.AddWithValue("@width", 10);
             command.Parameters.AddWithValue("@achievementid", null);
             command.ExecuteNonQuery();
         }

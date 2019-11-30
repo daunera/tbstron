@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class CharacterSelectorWindow : MonoBehaviour
 {
     public List<CharacterSelector> CharacterSelectors;
+
+    public MapSelector MapSelector;
 
     private void Start()
     {
@@ -14,6 +18,8 @@ public class CharacterSelectorWindow : MonoBehaviour
         {
             CharacterSelectors[i].window = this;
         }
+
+        MapSelector.window = this;
     }
 
     public void Inicialize()
@@ -36,6 +42,21 @@ public class CharacterSelectorWindow : MonoBehaviour
                 CharacterSelectors[i].gameObject.SetActive(false);
             }
         }
+
+        MapSelector.SetMap(MapManager.Instance.UnlockedMaps[0]);
+    }
+
+    internal Map GetMap(Map map, bool right)
+    {
+        List<Map> maps = MapManager.Instance.UnlockedMaps;
+
+        int index = (maps.IndexOf(maps.First(x => x.Id == map.Id)) + (right ? 1 : -1));
+        index = index % maps.Count;
+        if (index < 0)
+        {
+            index += maps.Count;
+        }
+        return maps[index];
     }
 
     internal Enemy GetEnemy(Enemy actor, bool right)
@@ -78,5 +99,14 @@ public class CharacterSelectorWindow : MonoBehaviour
         }
 
         return characters[i];
+    }
+
+    public void OnClick_StartGameButton()
+    {
+        int enemiesCount = CharacterSelectors.Count(x => (x.actor?.Id ?? 0) > 0);
+        if (enemiesCount > 0)
+        {
+            SceneManager.LoadScene(2);
+        }
     }
 }

@@ -19,7 +19,7 @@ public class CharacterSelector : MonoBehaviour
     public Character character;
     public Enemy actor;
 
-    public CharacterSelectorWindow window;
+    internal CharacterSelectorWindow window;
 
     internal void SetCharacter(Character character)
     {

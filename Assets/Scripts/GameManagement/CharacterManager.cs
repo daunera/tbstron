@@ -12,6 +12,7 @@ public class CharacterManager : MonoBehaviour
     public static CharacterManager Instance;
 
     public List<Character> UnlockedCharacters;
+
     public List<Enemy> UnlockedEnemies;
 
     private void Awake()

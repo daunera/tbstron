@@ -112,6 +112,7 @@ public class Player
 
         CharacterManager.Instance.LoadUnlockedCharacters(connection, CompletedAchievements());
         CharacterManager.Instance.LoadUnlockedEnemies(connection, CompletedAchievements());
+        MapManager.Instance.LoadUnlockedMaps(connection, CompletedAchievements());
     }
 
     private List<Achievement> CompletedAchievements()
