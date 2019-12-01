@@ -189,8 +189,6 @@ public class DBConnector : MonoBehaviour
         }
     }
 
-
-
     private void CreateCharacters(SQLiteConnection connection)
     {
         string querry = $"CREATE TABLE IF NOT EXISTS {Character.TableName} ( " +
@@ -272,7 +270,7 @@ public class DBConnector : MonoBehaviour
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
             command.Prepare();
-            command.Parameters.AddWithValue("@name", "SimpleAi");
+            command.Parameters.AddWithValue("@name", "DummyAi");
             command.Parameters.AddWithValue("@achievementid", null);
             command.ExecuteNonQuery();
         }
@@ -281,7 +279,7 @@ public class DBConnector : MonoBehaviour
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
             command.Prepare();
-            command.Parameters.AddWithValue("@name", "MediumAi");
+            command.Parameters.AddWithValue("@name", "SurvivalAi");
             command.Parameters.AddWithValue("@achievementid", null);
             command.ExecuteNonQuery();
         }

@@ -16,9 +16,9 @@ public class BoardManager : MonoBehaviour
     private Transform boardHolder;
     private Transform tileHolder;
     private Transform playerHolderr;
-    public List<PlayerInGame> players;
+    public List<PlayerBehaviour> players;
 
-    private TileBehaviour[,] tiles;
+    public TileBehaviour[,] tiles;
 
     public void SetupBoard(Map map, List<Character> player, List<Character> enemies, List<Enemy> enemyLvl)
     {
@@ -26,6 +26,8 @@ public class BoardManager : MonoBehaviour
         WallGenerator(map.Id - 1);
         PlayersAtRandom(player);
         EnemyAtRandom(enemies, enemyLvl);
+
+        InvokeRepeating(nameof(StepForwardAll), 2.0f, 1f);
     }
 
     void BoardSetup(Map map)
@@ -39,7 +41,7 @@ public class BoardManager : MonoBehaviour
         tileHolder = boardHolder.Find("Tiles");
         playerHolderr = boardHolder.Find("Players");
 
-        players = new List<PlayerInGame>();
+        players = new List<PlayerBehaviour>();
 
 
         for (int x = 0; x < columns; x++)
@@ -71,37 +73,30 @@ public class BoardManager : MonoBehaviour
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
             renderer.color = ch[i].Color;
 
-            PlayerInGame pig = instance.transform.GetComponent<PlayerInGame>();
-            pig.IsAlive = true;
-            pig.IsEnemy = i != 0;
-            players.Add(pig);
+            PlayerBehaviour playerBehaviour = instance.transform.GetComponent<PlayerBehaviour>();
+            playerBehaviour.Initialize(i != 0, PlayerBehaviour.playerAxis[i], 0, this);
+            players.Add(playerBehaviour);
 
-            Move move = instance.GetComponent<Move>();
-            move.axis = Move.playerAxis[i];
             instance.transform.SetParent(playerHolderr);
         }
     }
 
     void EnemyAtRandom(List<Character> ch, List<Enemy> enemy)
     {
-        ch.ForEach(character =>
+        for (int i = 0; i < ch.Count; i++)
         {
             GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
             instance.transform.forward = new Vector3(0, 1, 0);
 
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
-            renderer.color = character.Color;
+            renderer.color = ch[i].Color;
 
-            PlayerInGame pig = instance.transform.GetComponent<PlayerInGame>();
-            pig.IsAlive = true;
-            pig.IsEnemy = true;
-            pig.enemyLevel = enemy[ch.IndexOf(character)].Id;
-            players.Add(pig);
-
-            Move move = instance.GetComponent<Move>();
+            PlayerBehaviour playerBehaviour = instance.transform.GetComponent<PlayerBehaviour>();
+            playerBehaviour.Initialize(true, null, ch[i].Id, this);
+            players.Add(playerBehaviour);
 
             instance.transform.SetParent(playerHolderr);
-        });
+        }
     }
 
     void WallGenerator(int wallDensity)
@@ -166,34 +161,47 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void UpdateTile(PlayerInGame obj, Vector3 targetVector)
+    private void StepForwardAll()
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].IsAlive)
+            {
+                UpdateTile(players[i], players[i].GetTargetVector());
+            }
+        }
+    }
+
+    public void UpdateTile(PlayerBehaviour playerBehaviour, Vector3 targetVector)
     {
         int x = (int)targetVector.x;
         int y = (int)targetVector.y;
 
         if (x >= 0 && x < columns && y >= 0 && y < rows && tiles[x, y].type == enTileType.Empty)
         {
-            tiles[x, y].SetType(enTileType.Wall, obj.transform.GetComponent<SpriteRenderer>().color);
+            tiles[x, y].SetType(enTileType.Wall, playerBehaviour.transform.GetComponent<SpriteRenderer>().color);
 
-            obj.transform.position = targetVector;
+            playerBehaviour.transform.position = targetVector;
         }
         else
         {
-            obj.IsAlive = false;
+            playerBehaviour.IsAlive = false;
 
-            if (obj.IsEnemy)
+            if (playerBehaviour.IsEnemy)
             {
                 PlayerManager.Instance.AchievementProgress(enAchievementType.EnemiesSlain);
                 if (players.Count(p => p.IsAlive) == 1)
                 {
                     PlayerManager.Instance.AchievementProgress(enAchievementType.GamesWon);
                     PlayerManager.Instance.AchievementProgress(enAchievementType.GamesPlayed);
+                    CancelInvoke(nameof(StepForwardAll));
                     GameManager.instance.GameOver();
                 }               
             }
             else
             {
                 PlayerManager.Instance.AchievementProgress(enAchievementType.GamesPlayed);
+                CancelInvoke(nameof(StepForwardAll));
                 GameManager.instance.GameOver();
             }
         }

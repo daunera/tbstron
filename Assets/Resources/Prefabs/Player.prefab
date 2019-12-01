@@ -10,9 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2528883107661809218}
   - component: {fileID: 4322829957683608477}
-  - component: {fileID: 2345123031943730742}
-  - component: {fileID: -3279295061020166323}
-  - component: {fileID: 6594376124298847753}
+  - component: {fileID: -31529548876406146}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -83,44 +81,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &2345123031943730742
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842909589693437141}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
---- !u!114 &-3279295061020166323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842909589693437141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcea57d11e10cf0459a1609a5e1ec83c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  upKey: 273
-  downKey: 274
-  rightKey: 275
-  leftKey: 276
---- !u!114 &6594376124298847753
+--- !u!114 &-31529548876406146
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -132,3 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93111e6abbcb2a247b6fc6c50dbefa40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsAlive: 0
+  IsEnemy: 0
+  enemyLevel: 0
+  axis: 
