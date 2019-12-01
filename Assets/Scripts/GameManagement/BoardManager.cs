@@ -6,77 +6,51 @@ using Random = UnityEngine.Random;
 
 public class BoardManager : MonoBehaviour
 {
-    public int columns = 20;
-    public int rows = 20;
+    public int columns;
+    public int rows;
 
     public GameObject tile;
-    public GameObject wall;
-    public GameObject border;
     public GameObject player;
 
     private Transform boardHolder;
-    private List<Vector3> gridPositions = new List<Vector3>();
-
     public List<PlayerInGame> players = new List<PlayerInGame>();
 
-    void Start()
+    private TileBehaviour[,] tiles;
+
+    public void SetupBoard(Map map, List<Character> player, List<Character> enemies, List<Enemy> enemyLvl)
     {
-
-    }
-
-    void Update()
-    {
-
-    }
-
-
-    public void SetupBoard(Map mp, List<Character> player, List<Character> enemies, List<Enemy> enemyLvl)
-    {
-        BoardSetup();
-        InitList();
-        WallGenerator(mp.Id - 1);
+        BoardSetup(map);
+        WallGenerator(map.Id - 1);
         PlayersAtRandom(player);
         EnemyAtRandom(enemies, enemyLvl);
     }
 
-    void BoardSetup()
+    void BoardSetup(Map map)
     {
+        rows = map.Height + 2;
+        columns = map.Width + 2;
+        tiles = new TileBehaviour[columns, rows];
+
         boardHolder = GameObject.Find("Board").transform;
 
-        for (int x = -1; x <= columns; x++)
-        {
-            for (int y = -1; y <= rows; y++)
-            {
-                GameObject toInstantiate = tile;
-                if (x == -1 || x == columns || y == -1 || y == rows)
-                    toInstantiate = border;
-
-                GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
-                instance.transform.SetParent(boardHolder);
-
-            }
-
-        }
-    }
-
-    void InitList()
-    {
-        gridPositions.Clear();
         for (int x = 0; x < columns; x++)
         {
             for (int y = 0; y < rows; y++)
             {
-                gridPositions.Add(new Vector3(x, y, 0f));
+                GameObject instance = Instantiate(tile, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
+                instance.transform.SetParent(boardHolder);
+                if (x == 0 || x == columns - 1 || y == 0 || y == rows - 1)
+                    instance.GetComponent<TileBehaviour>().SetType(enTileType.Wall, new Color(0, 0, 0));
+
+                tiles[x, y] = instance.GetComponent<TileBehaviour>();
             }
         }
     }
 
+
     private Vector3 RandomPosition()
     {
-        int randomIndex = Random.Range(0, gridPositions.Count);
-        Vector3 randomPosition = gridPositions[randomIndex];
-        gridPositions.RemoveAt(randomIndex);
-        return randomPosition;
+        return new Vector3(Random.Range(1, columns - 1), Random.Range(1, rows - 1), 0);
     }
 
     void PlayersAtRandom(List<Character> ch)
@@ -94,7 +68,7 @@ public class BoardManager : MonoBehaviour
             pig.IsEnemy = false;
 
             Move move = instance.GetComponent<Move>();
-            setKeyCodes(move, playerNum);
+            setInputAxis(move, playerNum);
             instance.transform.SetParent(boardHolder);
             playerNum++;
         });
@@ -115,7 +89,7 @@ public class BoardManager : MonoBehaviour
             pig.enemyLevel = enemy[ch.IndexOf(character)].Id;
 
             Move move = instance.GetComponent<Move>();
-            setKeyCodes(move, 0);
+            setInputAxis(move, 0);
 
             instance.transform.SetParent(boardHolder);
         });
@@ -129,15 +103,13 @@ public class BoardManager : MonoBehaviour
         // wall density between 0-2 
         for (int i = 0; i < wallDensity * 5; i++)
         {
-            var containFlag = false;
-
             Vector3 wallVector = RandomPosition();
             int direction = Random.Range(0, 3); // 0 up, 1 right, 2 down, 3 left
-            GameObject instance = Instantiate(wall, wallVector, Quaternion.identity);
-            instance.transform.SetParent(boardHolder);
+
+            tiles[(int)wallVector.x, (int)wallVector.y].SetType(enTileType.Wall, new Color(0, 0, 0));
 
             int doTurnCount = averageWallTurn;
-            for (int y = 0; y < averageWallLength; y++)
+            for (int j = 0; j < averageWallLength; j++)
             {
                 if (doTurnCount < 1)
                 {
@@ -172,12 +144,12 @@ public class BoardManager : MonoBehaviour
                         break;
                 }
 
-                containFlag = gridPositions.Exists(v => v == wallVector);
-                if (containFlag)
+                int x = (int)wallVector.x;
+                int y = (int)wallVector.y;
+
+                if (x >= 0 && x < columns && y >= 0 && y < rows && tiles[x, y].type == enTileType.Empty)
                 {
-                    instance = Instantiate(wall, wallVector, Quaternion.identity);
-                    instance.transform.SetParent(boardHolder);
-                    gridPositions.Remove(wallVector);
+                    tiles[x, y].SetType(enTileType.Wall, new Color(0, 0, 0));
                 }
                 else
                     break;
@@ -187,44 +159,25 @@ public class BoardManager : MonoBehaviour
 
     }
 
-    public void UpdateTile(GameObject obj, Vector3 directionVector)
+    public void UpdateTile(GameObject obj, Vector3 targetVector)
     {
-        var isClearTile = true;
-        Vector3 expectedVector = obj.transform.position + directionVector;
+        int x = (int)targetVector.x;
+        int y = (int)targetVector.y;
 
-        List<GameObject> nextTileObjects = new List<GameObject>();
-
-        for (int i = 0; i < boardHolder.transform.childCount; i++)
+        if (x >= 0 && x < columns && y >= 0 && y < rows && tiles[x, y].type == enTileType.Empty)
         {
-            if (boardHolder.transform.GetChild(i).position.Equals(expectedVector))
-            {
-                nextTileObjects.Add(boardHolder.transform.GetChild(i).gameObject);
-            }
-        }
-        nextTileObjects.ForEach(t =>
-        {
-            string name = t.name.Split('(')[0];
-            if (name == wall.name || name == border.name || name == player.name)
-                isClearTile = false;
+            tiles[x, y].SetType(enTileType.Wall, obj.transform.GetComponent<SpriteRenderer>().color);
 
-        });
-
-        if (isClearTile)
-        {
-            GameObject instance = Instantiate(wall, obj.transform.position, Quaternion.identity);
-            instance.transform.SetParent(boardHolder);
-            SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
-            renderer.color = obj.transform.GetComponent<SpriteRenderer>().color;
-
-            obj.transform.position = expectedVector;
+            obj.transform.position = targetVector;
         }
         else
         {
             obj.GetComponent<PlayerInGame>().IsAlive = false;
+            obj.SetActive(false);
         }
     }
 
-    private void setKeyCodes(Move move, int axis)
+    private void setInputAxis(Move move, int axis)
     {
         if (Move.playerAxis.ContainsKey(axis))
         {
@@ -232,7 +185,5 @@ public class BoardManager : MonoBehaviour
         }
 
         move.transform.forward = new Vector3(0, 1, 0);
-
     }
-
 }

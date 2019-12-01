@@ -17,7 +17,7 @@ public class Move : MonoBehaviour
 
     void Start()
     {
-        InvokeRepeating("StepForward", 2.0f, 1f);
+        InvokeRepeating(nameof(StepForward), 2.0f, 1f);
     }
 
     void Update()
@@ -45,7 +45,11 @@ public class Move : MonoBehaviour
                 rotation = 0;
             }
 
-            GameManager.instance.boardScript.UpdateTile(gameObject, transform.forward);
+            GameManager.instance.boardScript.UpdateTile(gameObject, transform.position + transform.forward);
+        }
+        else
+        {
+            CancelInvoke(nameof(StepForward));
         }
     }
 }
