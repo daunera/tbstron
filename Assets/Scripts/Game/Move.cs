@@ -4,20 +4,23 @@ using UnityEngine;
 
 public class Move : MonoBehaviour
 {
+    private float rotation = 0;
+    private PlayerInGame playerInGame;
+
     public static Dictionary<int, string> playerAxis = new Dictionary<int, string>
     {
         { 0, "Player1" },
         { 1, "Guest1" },
         { 2, "Guest2" },
         { 3, "Guest3" }
-    };
-
+    };  
     public string axis = null;
-    private float rotation = 0;
+
 
     void Start()
     {
         InvokeRepeating(nameof(StepForward), 2.0f, 1f);
+        playerInGame = gameObject.GetComponent<PlayerInGame>();
     }
 
     void Update()
@@ -45,7 +48,7 @@ public class Move : MonoBehaviour
                 rotation = 0;
             }
 
-            GameManager.instance.boardScript.UpdateTile(gameObject, transform.position + transform.forward);
+            GameManager.instance.boardScript.UpdateTile(playerInGame, transform.position + transform.forward);
         }
         else
         {

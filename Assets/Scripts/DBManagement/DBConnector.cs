@@ -255,4 +255,14 @@ public class DBConnector : MonoBehaviour
             PlayerManager.Instance.Player = new Player(connection, playerName);
         }
     }
+
+    public static void RefreshUnlocks()
+    {
+        using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+        {
+            connection.Open();
+
+            PlayerManager.Instance.Player.RefreshUnlocks(connection);
+        }
+    }
 }

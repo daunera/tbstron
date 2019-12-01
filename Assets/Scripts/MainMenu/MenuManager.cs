@@ -32,6 +32,8 @@ public class MenuManager : MonoBehaviour
         MainMenuWindow.SetActive(false);
         AchievementsWindow.SetActive(false);
         CharacterSelectorWindow.SetActive(false);
+
+        LogIn();
     }
 
     public void OnClick_LogIn()
@@ -39,9 +41,18 @@ public class MenuManager : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(UserNameInputText.text))
         {
             DBConnector.SetPlayer(UserNameInputText.text.Trim());
+            LogIn();
+        }
+    }
+
+    private void LogIn()
+    {
+        if (PlayerManager.Instance.Player != null)
+        {
             UserNameDisplayText.text = PlayerManager.Instance.Player.Name;
             MainMenuWindow.SetActive(true);
             LogInWindow.SetActive(false);
+            DBConnector.RefreshUnlocks();
         }
     }
 

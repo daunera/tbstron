@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -29,5 +31,10 @@ public class GameManager : MonoBehaviour
 
             boardScript.SetupBoard(map, players, enemies, enemyLevels);
         }
+    }
+
+    internal void GameOver(bool isPlayerWon)
+    {
+        SceneManager.LoadScene(1);
     }
 }

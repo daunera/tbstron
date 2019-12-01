@@ -109,7 +109,10 @@ public class Player
                 }
             }
         }
+    }
 
+    public void RefreshUnlocks(SQLiteConnection connection)
+    {
         CharacterManager.Instance.LoadUnlockedCharacters(connection, CompletedAchievements());
         CharacterManager.Instance.LoadUnlockedEnemies(connection, CompletedAchievements());
         MapManager.Instance.LoadUnlockedMaps(connection, CompletedAchievements());

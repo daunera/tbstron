@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
+using System.Linq;
 
 public class BoardManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class BoardManager : MonoBehaviour
     private Transform boardHolder;
     private Transform tileHolder;
     private Transform playerHolderr;
-    public List<PlayerInGame> players = new List<PlayerInGame>();
+    public List<PlayerInGame> players;
 
     private TileBehaviour[,] tiles;
 
@@ -37,6 +38,8 @@ public class BoardManager : MonoBehaviour
         boardHolder = GameObject.Find("Board").transform;
         tileHolder = boardHolder.Find("Tiles");
         playerHolderr = boardHolder.Find("Players");
+
+        players = new List<PlayerInGame>();
 
 
         for (int x = 0; x < columns; x++)
@@ -71,6 +74,7 @@ public class BoardManager : MonoBehaviour
             PlayerInGame pig = instance.transform.GetComponent<PlayerInGame>();
             pig.IsAlive = true;
             pig.IsEnemy = false;
+            players.Add(pig);
 
             Move move = instance.GetComponent<Move>();
             move.axis = Move.playerAxis[i];
@@ -92,6 +96,7 @@ public class BoardManager : MonoBehaviour
             pig.IsAlive = true;
             pig.IsEnemy = true;
             pig.enemyLevel = enemy[ch.IndexOf(character)].Id;
+            players.Add(pig);
 
             Move move = instance.GetComponent<Move>();
 
@@ -161,7 +166,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void UpdateTile(GameObject obj, Vector3 targetVector)
+    public void UpdateTile(PlayerInGame obj, Vector3 targetVector)
     {
         int x = (int)targetVector.x;
         int y = (int)targetVector.y;
@@ -174,8 +179,15 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            obj.GetComponent<PlayerInGame>().IsAlive = false;
-            obj.SetActive(false);
+            obj.IsAlive = false;
+            if (!players[0].IsAlive)
+            {
+                GameManager.instance.GameOver(true);
+            }
+            else if (players.Count(p => p.IsAlive) == 1)
+            {
+                GameManager.instance.GameOver(false);
+            }
         }
     }
 }
