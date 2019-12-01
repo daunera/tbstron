@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class Move : MonoBehaviour
 {
-    public KeyCode upKey;
-    public KeyCode downKey;
+
     public KeyCode rightKey;
     public KeyCode leftKey;
-
-    private Vector3 directionVector = new Vector3(0,0,0);
+    public Vector3 directionVector = new Vector3(0,0,0);
 
     void Start()
     {
@@ -18,27 +16,22 @@ public class Move : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(upKey))
+        if (Input.GetKeyDown(leftKey))
         {
-            directionVector = new Vector3(0, 1, 0);
-        }
-        else if (Input.GetKeyDown(downKey))
-        {
-            directionVector = new Vector3(0, -1, 0);
+            // TODO
         }
         else if (Input.GetKeyDown(rightKey))
         {
-            directionVector = new Vector3(1, 0, 0);
-        }
-        else if (Input.GetKeyDown(leftKey))
-        {
-            directionVector = new Vector3(-1, 0, 0);
+            // TODO
         }
     }
 
     void StepForward()
     {
-        if(!directionVector.Equals(new Vector3(0,0,0)))
-            GameManager.instance.boardScript.UpdateTile(gameObject, directionVector);
+        if (gameObject.GetComponent<PlayerInGame>().IsAlive)
+        {
+            if (!directionVector.Equals(new Vector3(0, 0, 0)))
+                GameManager.instance.boardScript.UpdateTile(gameObject, directionVector);
+        }
     }
 }

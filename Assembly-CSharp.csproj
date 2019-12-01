@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\GameManagement\GameManager.cs" />
     <Compile Include="Assets\Scripts\GameManagement\MapManager.cs" />
     <Compile Include="Assets\Scripts\GameManagement\Move.cs" />
+    <Compile Include="Assets\Scripts\GameManagement\PlayerInGame.cs" />
     <Compile Include="Assets\Scripts\GameManagement\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\MainMenu\CharacterSelector.cs" />
     <Compile Include="Assets\Scripts\MainMenu\CharacterSelectorWindow.cs" />

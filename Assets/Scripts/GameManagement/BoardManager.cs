@@ -17,6 +17,8 @@ public class BoardManager : MonoBehaviour
     private Transform boardHolder;
     private List<Vector3> gridPositions = new List<Vector3>();
 
+    public List<PlayerInGame> players = new List<PlayerInGame>();
+
     void Start()
     {
 
@@ -79,14 +81,30 @@ public class BoardManager : MonoBehaviour
 
     void PlayersAtRandom(List<Character> ch)
     {
+        var playerNum = 1;
         ch.ForEach(character =>
         {
             GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
 
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
             renderer.color = character.Color;
-            // todo case of more player, set the keyt to control eg WASD
+
+            PlayerInGame pig = instance.transform.GetComponent<PlayerInGame>();
+            pig.IsAlive = true;
+            pig.IsEnemy = false;
+
+            Move move = instance.GetComponent<Move>();
+            if(playerNum == 1)
+                setKeyCodes(move, KeyCode.LeftArrow, KeyCode.RightArrow);
+            else if (playerNum == 2)
+                setKeyCodes(move, KeyCode.A, KeyCode.D);
+            else if (playerNum == 3)
+                setKeyCodes(move, KeyCode.V, KeyCode.N);
+            else if (playerNum == 4)
+                setKeyCodes(move, KeyCode.I, KeyCode.P);
+
             instance.transform.SetParent(boardHolder);
+            playerNum++;
         });
     }
 
@@ -99,11 +117,13 @@ public class BoardManager : MonoBehaviour
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
             renderer.color = character.Color;
 
+            PlayerInGame pig = instance.transform.GetComponent<PlayerInGame>();
+            pig.IsAlive = true;
+            pig.IsEnemy = true;
+            pig.enemyLevel = enemy[ch.IndexOf(character)].Id;
+
             Move move = instance.GetComponent<Move>();
-            move.upKey = KeyCode.None;
-            move.rightKey = KeyCode.None;
-            move.downKey = KeyCode.None;
-            move.leftKey = KeyCode.None;
+            setKeyCodes(move, KeyCode.None, KeyCode.None);
 
             instance.transform.SetParent(boardHolder);
         });
@@ -175,7 +195,7 @@ public class BoardManager : MonoBehaviour
 
     }
 
-    public bool UpdateTile(GameObject obj, Vector3 directionVector)
+    public void UpdateTile(GameObject obj, Vector3 directionVector)
     {
         var isClearTile = true;
         Vector3 expectedVector = obj.transform.position + directionVector;
@@ -204,12 +224,29 @@ public class BoardManager : MonoBehaviour
             renderer.color = obj.transform.GetComponent<SpriteRenderer>().color;
 
             obj.transform.position = expectedVector;
-
-            return true;
         }
         else
-            return false;
-        
+        {
+            obj.GetComponent<PlayerInGame>().IsAlive = false;
+        }  
+    }
+
+    private void setKeyCodes(Move move, KeyCode left, KeyCode right)
+    {
+        move.leftKey = left;
+        move.rightKey = right;
+
+        int i = Random.Range(0, 2) % 2;
+        int j = Random.Range(0, 2) % 2;
+        int minusOrNot = 1;
+        if (i.Equals(0))
+            minusOrNot = -1;
+
+        if (j.Equals(0))
+            move.directionVector = new Vector3(0, 1 * minusOrNot, 0);
+        else
+            move.directionVector = new Vector3(1 * minusOrNot, 0, 0);
+
     }
 
 }
