@@ -6,10 +6,10 @@ public class Move : MonoBehaviour
 {
     public static Dictionary<int, string> playerAxis = new Dictionary<int, string>
     {
-        { 1, "Player1" },
-        { 2, "Guest1" },
-        { 3, "Guest2" },
-        { 4, "Guest3" }
+        { 0, "Player1" },
+        { 1, "Guest1" },
+        { 2, "Guest2" },
+        { 3, "Guest3" }
     };
 
     public string axis = null;

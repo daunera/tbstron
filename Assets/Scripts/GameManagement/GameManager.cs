@@ -30,10 +30,4 @@ public class GameManager : MonoBehaviour
             boardScript.SetupBoard(map, players, enemies, enemyLevels);
         }
     }
-     
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

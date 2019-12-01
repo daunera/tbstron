@@ -13,6 +13,8 @@ public class BoardManager : MonoBehaviour
     public GameObject player;
 
     private Transform boardHolder;
+    private Transform tileHolder;
+    private Transform playerHolderr;
     public List<PlayerInGame> players = new List<PlayerInGame>();
 
     private TileBehaviour[,] tiles;
@@ -33,6 +35,8 @@ public class BoardManager : MonoBehaviour
         GameObject.Find("Main Camera").transform.position = new Vector3(columns / 2, rows / 2, -1);
 
         boardHolder = GameObject.Find("Board").transform;
+        tileHolder = boardHolder.Find("Tiles");
+        playerHolderr = boardHolder.Find("Players");
 
 
         for (int x = 0; x < columns; x++)
@@ -40,7 +44,7 @@ public class BoardManager : MonoBehaviour
             for (int y = 0; y < rows; y++)
             {
                 GameObject instance = Instantiate(tile, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
-                instance.transform.SetParent(boardHolder);
+                instance.transform.SetParent(tileHolder);
                 if (x == 0 || x == columns - 1 || y == 0 || y == rows - 1)
                     instance.GetComponent<TileBehaviour>().SetType(enTileType.Wall, new Color(0, 0, 0));
 
@@ -59,6 +63,7 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < ch.Count; i++)
         {
             GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
+            instance.transform.forward = new Vector3(0, 1, 0);
 
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
             renderer.color = ch[i].Color;
@@ -68,8 +73,8 @@ public class BoardManager : MonoBehaviour
             pig.IsEnemy = false;
 
             Move move = instance.GetComponent<Move>();
-            setInputAxis(move, i + 1);
-            instance.transform.SetParent(boardHolder);
+            move.axis = Move.playerAxis[i];
+            instance.transform.SetParent(playerHolderr);
         }
     }
 
@@ -78,6 +83,7 @@ public class BoardManager : MonoBehaviour
         ch.ForEach(character =>
         {
             GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
+            instance.transform.forward = new Vector3(0, 1, 0);
 
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
             renderer.color = character.Color;
@@ -88,9 +94,8 @@ public class BoardManager : MonoBehaviour
             pig.enemyLevel = enemy[ch.IndexOf(character)].Id;
 
             Move move = instance.GetComponent<Move>();
-            setInputAxis(move, 0);
 
-            instance.transform.SetParent(boardHolder);
+            instance.transform.SetParent(playerHolderr);
         });
     }
 
@@ -172,15 +177,5 @@ public class BoardManager : MonoBehaviour
             obj.GetComponent<PlayerInGame>().IsAlive = false;
             obj.SetActive(false);
         }
-    }
-
-    private void setInputAxis(Move move, int axis)
-    {
-        if (Move.playerAxis.ContainsKey(axis))
-        {
-            move.axis = Move.playerAxis[axis];
-        }
-
-        move.transform.forward = new Vector3(0, 1, 0);
     }
 }
