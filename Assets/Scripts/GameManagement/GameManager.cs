@@ -22,10 +22,12 @@ public class GameManager : MonoBehaviour
 
     void InitGame()
     {
-        List<Character> characters = CharacterManager.Instance.SelectedCharacters;
+        List<Character> players = CharacterManager.Instance.SelectedPlayerCharacters;
+        List<Character> enemies = CharacterManager.Instance.SelectedEnemyCharacters;
+        List<Enemy> enemyLevels = CharacterManager.Instance.SelectedEnemyLevels;
         Map map = MapManager.Instance.SelectedMap;
 
-        boardScript.SetupBoard(map, characters);
+        boardScript.SetupBoard(map, players, enemies, enemyLevels);
     }
      
     // Update is called once per frame

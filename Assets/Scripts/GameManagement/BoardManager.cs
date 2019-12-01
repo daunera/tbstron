@@ -17,9 +17,6 @@ public class BoardManager : MonoBehaviour
     private Transform boardHolder;
     private List<Vector3> gridPositions = new List<Vector3>();
 
-    //private GameObject[] characters;
-    //private Map map = null;
-
     void InitList()
     {
         gridPositions.Clear();
@@ -60,14 +57,34 @@ public class BoardManager : MonoBehaviour
         return randomPosition;
     }
 
-    void CharactersAtRandom(List<Character> ch)
+    void PlayersAtRandom(List<Character> ch)
     {
         ch.ForEach(character =>
         {
-            GameObject toInstantiate = player;
-            SpriteRenderer renderer = toInstantiate.transform.GetComponent<SpriteRenderer>();
-            renderer.color = character.Color;
             GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
+
+            SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
+            renderer.color = character.Color;
+            // todo case of more player, set the keyt to control eg WASD
+            instance.transform.SetParent(boardHolder);
+        });
+    }
+
+    void EnemyAtRandom(List<Character> ch, List<Enemy> enemy)
+    {
+        ch.ForEach(character =>
+        {          
+            GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
+
+            SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
+            renderer.color = character.Color;
+
+            Move move = instance.GetComponent<Move>();
+            move.upKey = KeyCode.None;
+            move.rightKey = KeyCode.None;
+            move.downKey = KeyCode.None;
+            move.leftKey = KeyCode.None;
+
             instance.transform.SetParent(boardHolder);
         });
     }
@@ -138,12 +155,39 @@ public class BoardManager : MonoBehaviour
 
     }
 
-    public void SetupBoard(Map mp, List<Character> ch)
+    public void SetupBoard(Map mp, List<Character> player, List<Character> enemies, List<Enemy> enemyLvl)
     {
         BoardSetup();
         InitList();
         WallGenerator(mp.Id-1);
-        CharactersAtRandom(ch);
+        PlayersAtRandom(player);
+        EnemyAtRandom(enemies, enemyLvl);
+    }
+
+    public void ChangeTile(GameObject obj, Vector3 difVec)
+    {
+        var addWallFlag = false;
+        var index = 0;
+        Vector3 vec = obj.transform.position - difVec;
+        for (int i = 0; i < boardHolder.transform.childCount; i++)
+        {
+            if (boardHolder.transform.GetChild(i).position.Equals(vec)){
+                Transform tr = boardHolder.transform.GetChild(i);
+                Debug.Log(tr.name);
+                addWallFlag = true;
+                index = i;
+                break;
+            }
+        }
+        if (addWallFlag)
+        {
+            //Destroy(boardHolder.transform.GetChild(index).gameObject); todo
+            GameObject instance = Instantiate(wall, obj.transform.position, Quaternion.identity);
+            instance.transform.SetParent(boardHolder);
+            SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
+            renderer.color = obj.transform.GetComponent<SpriteRenderer>().color;
+        }
+        
     }
 
     // Start is called before the first frame update
