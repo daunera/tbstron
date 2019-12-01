@@ -10,10 +10,10 @@ public class Enemy
     public string Name { get; set; }
     public int? AchievementId { get; set; }
 
-    public Enemy()
+    public Enemy(string name)
     {
         Id = 0;
-        Name = "Inactive";
+        Name = name;
         AchievementId = null;
     }
 

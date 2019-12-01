@@ -19,6 +19,8 @@ public class CharacterSelector : MonoBehaviour
     public Character character;
     public Enemy actor;
 
+    public int Number;
+
     internal CharacterSelectorWindow window;
 
     internal void SetCharacter(Character character)
@@ -30,37 +32,59 @@ public class CharacterSelector : MonoBehaviour
         CharacterImage.sprite = character.Sprite;
     }
 
-    internal void SetActor(Enemy actor)
+    private void SetActor(bool right)
     {
-        if (actor == null)
+        bool isPlayer = false;
+        Enemy enemy = window.GetEnemy(actor, right, out isPlayer);
+
+        if (character.Id == 0)
+        {
+            SetCharacter(window.GetCharacter(character, true));
+        }
+
+        if (isPlayer)
+        {
+            SetPlayer();
+        }
+        else
+        {
+            SetEnemy(enemy);
+        }
+    }
+
+    internal void SetEnemy(Enemy actor)
+    {
+        if (actor.Id == 0)
+        {
+            SetCharacter(new Character());
+        }
+        ActorNameText.text = actor.Name;
+
+        this.actor = actor;
+    }
+
+    internal void SetPlayer()
+    {
+        actor = null;
+
+        if (Number == 0)
         {
             ActorNameText.text = PlayerManager.Instance.Player.Name;
         }
         else
         {
-            if (actor.Id == 0)
-            {
-                SetCharacter(new Character());
-            }
-            ActorNameText.text = actor.Name;
-
-            if (this.actor != null && this.actor.Id == 0 && actor.Id != 0)
-            {
-                SetCharacter(window.GetCharacter(character, true));
-            }
+            ActorNameText.text = "Guest" + Number;
         }
-
-        this.actor = actor;
     }
 
     public void OnClick_ActorRightButton()
     {
-        SetActor(window.GetEnemy(actor, true));
+        SetActor(true);
     }
 
     public void OnClick_ActorLeftButton()
     {
-        SetActor(window.GetEnemy(actor, false));
+        SetActor(false);
     }
 
     public void OnClick_CharacterRightButton()

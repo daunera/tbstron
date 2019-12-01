@@ -28,15 +28,15 @@ public class CharacterSelectorWindow : MonoBehaviour
         CharacterSelectors[0].ActorRightButton.gameObject.SetActive(false);
 
         CharacterSelectors[0].SetCharacter(CharacterManager.Instance.UnlockedCharacters[0]);
-        CharacterSelectors[0].SetActor(null);
+        CharacterSelectors[0].SetPlayer();
 
         CharacterSelectors[1].SetCharacter(CharacterManager.Instance.UnlockedCharacters[1]);
-        CharacterSelectors[1].SetActor(CharacterManager.Instance.UnlockedEnemies[0]);
+        CharacterSelectors[1].SetEnemy(CharacterManager.Instance.UnlockedEnemies[0]);
 
         for (int i = 2; i < CharacterSelectors.Count; i++)
         {
             CharacterSelectors[i].SetCharacter(new Character());
-            CharacterSelectors[i].SetActor(new Enemy());
+            CharacterSelectors[i].SetEnemy(new Enemy("Inactive"));
             if (CharacterManager.Instance.UnlockedCharacters.Count <= i)
             {
                 CharacterSelectors[i].gameObject.SetActive(false);
@@ -59,23 +59,28 @@ public class CharacterSelectorWindow : MonoBehaviour
         return maps[index];
     }
 
-    internal Enemy GetEnemy(Enemy actor, bool right)
+    internal Enemy GetEnemy(Enemy actor, bool right, out bool isPlayer)
     {
         List<Enemy> enemies = new List<Enemy>();
-        enemies.Add(new Enemy());
+        enemies.Add(new Enemy("Guest"));
+        enemies.Add(new Enemy("Inactive"));
         for (int i = 0; i < CharacterManager.Instance.UnlockedEnemies.Count; i++)
         {
             enemies.Add(CharacterManager.Instance.UnlockedEnemies[i]);
         }
 
-        int index = (enemies.IndexOf(enemies.First(x => x.Id == actor.Id)) + (right ? 1 : -1));
+        int index = (right ? 1 : -1);
+        if (actor != null)
+        {
+            index += enemies.IndexOf(enemies.First(x => x.Name.Equals(actor.Name)));
+        }
         index = index % enemies.Count;
         if (index < 0)
         {
             index += enemies.Count;
         }
+        isPlayer = index == 0;
         return enemies[index];
-
     }
 
     internal Character GetCharacter(Character character, bool right)
@@ -103,16 +108,16 @@ public class CharacterSelectorWindow : MonoBehaviour
 
     public void OnClick_StartGameButton()
     {
-        int enemiesCount = CharacterSelectors.Count(x => (x.actor?.Id ?? 0) > 0);
-        if (enemiesCount > 0)
+        int charactersCount = CharacterSelectors.Count(x => x.character.Id != 0);
+        if (charactersCount >= 2)
         {
             CharacterManager.Instance.SelectedPlayerCharacters.Clear();
             CharacterManager.Instance.SelectedPlayerCharacters.AddRange(CharacterSelectors.Where(c => c.actor == null).Select(c => c.character));
 
             CharacterManager.Instance.SelectedEnemyCharacters.Clear();
-            CharacterManager.Instance.SelectedEnemyCharacters.AddRange(CharacterSelectors.Where(c => (c.actor?.Id ?? 0) > 0).Select(c => c.character));
+            CharacterManager.Instance.SelectedEnemyCharacters.AddRange(CharacterSelectors.Where(c => c.actor != null && c.actor.Id != 0).Select(c => c.character));
             CharacterManager.Instance.SelectedEnemyLevels.Clear();
-            CharacterManager.Instance.SelectedEnemyLevels.AddRange(CharacterSelectors.Where(c => (c.actor?.Id ?? 0) > 0).Select(c => c.actor));
+            CharacterManager.Instance.SelectedEnemyLevels.AddRange(CharacterSelectors.Where(c => c.actor != null && c.actor.Id != 0).Select(c => c.actor));
 
             MapManager.Instance.SelectedMap = MapSelector.Map;
 
