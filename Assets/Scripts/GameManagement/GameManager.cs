@@ -15,19 +15,20 @@ public class GameManager : MonoBehaviour
         else if (instance != this)
             Destroy(gameObject);
 
-        DontDestroyOnLoad(gameObject);
         boardScript = GetComponent<BoardManager>();
-        InitGame();
     }
 
-    void InitGame()
+    void OnLevelWasLoaded(int level)
     {
-        List<Character> players = CharacterManager.Instance.SelectedPlayerCharacters;
-        List<Character> enemies = CharacterManager.Instance.SelectedEnemyCharacters;
-        List<Enemy> enemyLevels = CharacterManager.Instance.SelectedEnemyLevels;
-        Map map = MapManager.Instance.SelectedMap;
+        if (level == 2)
+        {
+            List<Character> players = CharacterManager.Instance.SelectedPlayerCharacters;
+            List<Character> enemies = CharacterManager.Instance.SelectedEnemyCharacters;
+            List<Enemy> enemyLevels = CharacterManager.Instance.SelectedEnemyLevels;
+            Map map = MapManager.Instance.SelectedMap;
 
-        boardScript.SetupBoard(map, players, enemies, enemyLevels);
+            boardScript.SetupBoard(map, players, enemies, enemyLevels);
+        }
     }
      
     // Update is called once per frame

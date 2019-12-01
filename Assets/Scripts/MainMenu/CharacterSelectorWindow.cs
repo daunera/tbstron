@@ -115,6 +115,7 @@ public class CharacterSelectorWindow : MonoBehaviour
             CharacterManager.Instance.SelectedEnemyLevels.AddRange(CharacterSelectors.Where(c => (c.actor?.Id ?? 0) > 0).Select(c => c.actor));
 
             MapManager.Instance.SelectedMap = MapSelector.Map;
+
             SceneManager.LoadScene(2);
         }
     }

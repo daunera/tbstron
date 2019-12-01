@@ -31,7 +31,7 @@ public class BoardManager : MonoBehaviour
 
     void BoardSetup()
     {
-        boardHolder = new GameObject("Board").transform;
+        boardHolder = GameObject.Find("Board").transform;
 
         for (int x = -1; x <= columns; x++)
         {
