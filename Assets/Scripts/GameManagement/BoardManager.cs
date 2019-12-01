@@ -94,15 +94,7 @@ public class BoardManager : MonoBehaviour
             pig.IsEnemy = false;
 
             Move move = instance.GetComponent<Move>();
-            if(playerNum == 1)
-                setKeyCodes(move, KeyCode.LeftArrow, KeyCode.RightArrow);
-            else if (playerNum == 2)
-                setKeyCodes(move, KeyCode.A, KeyCode.D);
-            else if (playerNum == 3)
-                setKeyCodes(move, KeyCode.V, KeyCode.N);
-            else if (playerNum == 4)
-                setKeyCodes(move, KeyCode.I, KeyCode.P);
-
+            setKeyCodes(move, playerNum);
             instance.transform.SetParent(boardHolder);
             playerNum++;
         });
@@ -111,7 +103,7 @@ public class BoardManager : MonoBehaviour
     void EnemyAtRandom(List<Character> ch, List<Enemy> enemy)
     {
         ch.ForEach(character =>
-        {          
+        {
             GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
 
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
@@ -123,7 +115,7 @@ public class BoardManager : MonoBehaviour
             pig.enemyLevel = enemy[ch.IndexOf(character)].Id;
 
             Move move = instance.GetComponent<Move>();
-            setKeyCodes(move, KeyCode.None, KeyCode.None);
+            setKeyCodes(move, 0);
 
             instance.transform.SetParent(boardHolder);
         });
@@ -135,7 +127,7 @@ public class BoardManager : MonoBehaviour
         int averageWallTurn = Convert.ToInt32(averageWallLength / 5);
 
         // wall density between 0-2 
-        for (int i = 0; i < wallDensity*5; i++)
+        for (int i = 0; i < wallDensity * 5; i++)
         {
             var containFlag = false;
 
@@ -204,7 +196,8 @@ public class BoardManager : MonoBehaviour
 
         for (int i = 0; i < boardHolder.transform.childCount; i++)
         {
-            if (boardHolder.transform.GetChild(i).position.Equals(expectedVector)){
+            if (boardHolder.transform.GetChild(i).position.Equals(expectedVector))
+            {
                 nextTileObjects.Add(boardHolder.transform.GetChild(i).gameObject);
             }
         }
@@ -228,24 +221,17 @@ public class BoardManager : MonoBehaviour
         else
         {
             obj.GetComponent<PlayerInGame>().IsAlive = false;
-        }  
+        }
     }
 
-    private void setKeyCodes(Move move, KeyCode left, KeyCode right)
+    private void setKeyCodes(Move move, int axis)
     {
-        move.leftKey = left;
-        move.rightKey = right;
+        if (Move.playerAxis.ContainsKey(axis))
+        {
+            move.axis = Move.playerAxis[axis];
+        }
 
-        int i = Random.Range(0, 2) % 2;
-        int j = Random.Range(0, 2) % 2;
-        int minusOrNot = 1;
-        if (i.Equals(0))
-            minusOrNot = -1;
-
-        if (j.Equals(0))
-            move.directionVector = new Vector3(0, 1 * minusOrNot, 0);
-        else
-            move.directionVector = new Vector3(1 * minusOrNot, 0, 0);
+        move.transform.forward = new Vector3(0, 1, 0);
 
     }
 

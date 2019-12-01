@@ -40,8 +40,6 @@ public class DBConnector : MonoBehaviour
         }
     }
 
-    
-
     private void CreatePlayers(SQLiteConnection connection)
     {
         string querry = $"CREATE TABLE IF NOT EXISTS {Player.TableName} ( " +

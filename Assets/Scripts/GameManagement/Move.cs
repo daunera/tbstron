@@ -4,25 +4,34 @@ using UnityEngine;
 
 public class Move : MonoBehaviour
 {
+    public static Dictionary<int, string> playerAxis = new Dictionary<int, string>
+    {
+        { 1, "Player1" },
+        { 2, "Guest1" },
+        { 3, "Guest2" },
+        { 4, "Guest3" }
+    };
 
-    public KeyCode rightKey;
-    public KeyCode leftKey;
-    public Vector3 directionVector = new Vector3(0,0,0);
+    public string axis = null;
+    private float rotation = 0;
 
     void Start()
     {
-        InvokeRepeating("StepForward", 2.0f, 0.2f);
+        InvokeRepeating("StepForward", 2.0f, 1f);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(leftKey))
+        if (!string.IsNullOrEmpty(axis))
         {
-            // TODO
-        }
-        else if (Input.GetKeyDown(rightKey))
-        {
-            // TODO
+            if (Input.GetAxisRaw(axis) == 1)
+            {
+                rotation = 90F;
+            }
+            if (Input.GetAxisRaw(axis) == -1)
+            {
+                rotation = -90F;
+            }
         }
     }
 
@@ -30,8 +39,13 @@ public class Move : MonoBehaviour
     {
         if (gameObject.GetComponent<PlayerInGame>().IsAlive)
         {
-            if (!directionVector.Equals(new Vector3(0, 0, 0)))
-                GameManager.instance.boardScript.UpdateTile(gameObject, directionVector);
+            if (rotation != 0)
+            {
+                transform.Rotate(0.0f, rotation, 0.0f);
+                rotation = 0;
+            }
+
+            GameManager.instance.boardScript.UpdateTile(gameObject, transform.forward);
         }
     }
 }
