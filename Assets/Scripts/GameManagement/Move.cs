@@ -10,13 +10,9 @@ public class Move : MonoBehaviour
     public KeyCode leftKey;
 
     private Vector3 directionVector = new Vector3(0,0,0);
-    private Vector3 pos;
-    private int power = 1;
 
-    // Start is called before the first frame update
     void Start()
     {
-        pos = gameObject.transform.position;
         InvokeRepeating("StepForward", 2.0f, 0.2f);
     }
 
@@ -24,34 +20,25 @@ public class Move : MonoBehaviour
     {
         if (Input.GetKeyDown(upKey))
         {
-            directionVector = new Vector3(0, 1 * power, 0);
+            directionVector = new Vector3(0, 1, 0);
         }
         else if (Input.GetKeyDown(downKey))
         {
-            directionVector = new Vector3(0, -1 * power, 0);
+            directionVector = new Vector3(0, -1, 0);
         }
         else if (Input.GetKeyDown(rightKey))
         {
-            directionVector = new Vector3(1 * power, 0, 0);
+            directionVector = new Vector3(1, 0, 0);
         }
         else if (Input.GetKeyDown(leftKey))
         {
-            directionVector = new Vector3(-1* power, 0, 0);
+            directionVector = new Vector3(-1, 0, 0);
         }
     }
 
     void StepForward()
     {
-        gameObject.transform.position += directionVector;
-        if (!pos.Equals(gameObject.transform.position)) {
-            GameManager.instance.boardScript.ChangeTile(gameObject, directionVector);
-        }
-        // todo: collusion detect
-    }
-
-    private void OnTriggerEnter2D(Collider2D co)
-    {
-            Debug.Log("Collision! "+co.name+"("+co.transform.position.x+","+co.transform.position.y
-                +") Player("+gameObject.transform.position.x+","+gameObject.transform.position.x +")" );
+        if(!directionVector.Equals(new Vector3(0,0,0)))
+            GameManager.instance.boardScript.UpdateTile(gameObject, directionVector);
     }
 }

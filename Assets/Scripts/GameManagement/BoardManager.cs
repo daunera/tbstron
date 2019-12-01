@@ -17,16 +17,24 @@ public class BoardManager : MonoBehaviour
     private Transform boardHolder;
     private List<Vector3> gridPositions = new List<Vector3>();
 
-    void InitList()
+    void Start()
     {
-        gridPositions.Clear();
-        for (int x = 0; x < columns; x++)
-        {
-            for (int y = 0; y < rows; y++)
-            {
-                gridPositions.Add(new Vector3(x, y, 0f));
-            }
-        }
+
+    }
+
+    void Update()
+    {
+
+    }
+
+
+    public void SetupBoard(Map mp, List<Character> player, List<Character> enemies, List<Enemy> enemyLvl)
+    {
+        BoardSetup();
+        InitList();
+        WallGenerator(mp.Id - 1);
+        PlayersAtRandom(player);
+        EnemyAtRandom(enemies, enemyLvl);
     }
 
     void BoardSetup()
@@ -49,7 +57,19 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    Vector3 RandomPosition()
+    void InitList()
+    {
+        gridPositions.Clear();
+        for (int x = 0; x < columns; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                gridPositions.Add(new Vector3(x, y, 0f));
+            }
+        }
+    }
+
+    private Vector3 RandomPosition()
     {
         int randomIndex = Random.Range(0, gridPositions.Count);
         Vector3 randomPosition = gridPositions[randomIndex];
@@ -155,50 +175,41 @@ public class BoardManager : MonoBehaviour
 
     }
 
-    public void SetupBoard(Map mp, List<Character> player, List<Character> enemies, List<Enemy> enemyLvl)
+    public bool UpdateTile(GameObject obj, Vector3 directionVector)
     {
-        BoardSetup();
-        InitList();
-        WallGenerator(mp.Id-1);
-        PlayersAtRandom(player);
-        EnemyAtRandom(enemies, enemyLvl);
-    }
+        var isClearTile = true;
+        Vector3 expectedVector = obj.transform.position + directionVector;
 
-    public void ChangeTile(GameObject obj, Vector3 difVec)
-    {
-        var addWallFlag = false;
-        var index = 0;
-        Vector3 vec = obj.transform.position - difVec;
+        List<GameObject> nextTileObjects = new List<GameObject>();
+
         for (int i = 0; i < boardHolder.transform.childCount; i++)
         {
-            if (boardHolder.transform.GetChild(i).position.Equals(vec)){
-                Transform tr = boardHolder.transform.GetChild(i);
-                Debug.Log(tr.name);
-                addWallFlag = true;
-                index = i;
-                break;
+            if (boardHolder.transform.GetChild(i).position.Equals(expectedVector)){
+                nextTileObjects.Add(boardHolder.transform.GetChild(i).gameObject);
             }
         }
-        if (addWallFlag)
+        nextTileObjects.ForEach(t =>
         {
-            //Destroy(boardHolder.transform.GetChild(index).gameObject); todo
+            string name = t.name.Split('(')[0];
+            if (name == wall.name || name == border.name || name == player.name)
+                isClearTile = false;
+
+        });
+
+        if (isClearTile)
+        {
             GameObject instance = Instantiate(wall, obj.transform.position, Quaternion.identity);
             instance.transform.SetParent(boardHolder);
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
             renderer.color = obj.transform.GetComponent<SpriteRenderer>().color;
+
+            obj.transform.position = expectedVector;
+
+            return true;
         }
+        else
+            return false;
         
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
