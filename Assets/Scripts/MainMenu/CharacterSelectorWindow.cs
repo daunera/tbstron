@@ -106,6 +106,15 @@ public class CharacterSelectorWindow : MonoBehaviour
         int enemiesCount = CharacterSelectors.Count(x => (x.actor?.Id ?? 0) > 0);
         if (enemiesCount > 0)
         {
+            CharacterManager.Instance.SelectedPlayerCharacters.Clear();
+            CharacterManager.Instance.SelectedPlayerCharacters.AddRange(CharacterSelectors.Where(c => c.actor == null).Select(c => c.character));
+
+            CharacterManager.Instance.SelectedEnemyCharacters.Clear();
+            CharacterManager.Instance.SelectedEnemyCharacters.AddRange(CharacterSelectors.Where(c => (c.actor?.Id ?? 0) > 0).Select(c => c.character));
+            CharacterManager.Instance.SelectedEnemyLevels.Clear();
+            CharacterManager.Instance.SelectedEnemyLevels.AddRange(CharacterSelectors.Where(c => (c.actor?.Id ?? 0) > 0).Select(c => c.actor));
+
+            MapManager.Instance.SelectedMap = MapSelector.Map;
             SceneManager.LoadScene(2);
         }
     }

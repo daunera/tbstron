@@ -15,6 +15,10 @@ public class CharacterManager : MonoBehaviour
 
     public List<Enemy> UnlockedEnemies;
 
+    public List<Character> SelectedPlayerCharacters = new List<Character>();
+    public List<Character> SelectedEnemyCharacters = new List<Character>();
+    public List<Enemy> SelectedEnemyLevels = new List<Enemy>();
+
     private void Awake()
     {
         if (Instance == null)

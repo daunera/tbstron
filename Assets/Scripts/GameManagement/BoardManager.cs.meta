@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 626916121a7fccb4daf3b07669a8994f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - tile: {fileID: 3999495896728407749, guid: d54900bf01ae8a649bc00f32212c78af, type: 3}
+  - wall: {fileID: 6751196269206154696, guid: 7d7bddbe5ea187e4db856f797c317627, type: 3}
+  - border: {fileID: 3346089677468015392, guid: c565cd5fcf79e914fbc628cb0725d8c9,
+      type: 3}
+  - player: {fileID: 3842909589693437141, guid: 6b318d6b59b609c4ca88fc7cd4a968b8,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
