@@ -15,6 +15,8 @@ public class CharacterManager : MonoBehaviour
 
     public List<Enemy> UnlockedEnemies;
 
+    public List<Character> SelectedCharacters;
+
     private void Awake()
     {
         if (Instance == null)

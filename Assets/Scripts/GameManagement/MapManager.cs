@@ -10,6 +10,7 @@ public class MapManager : MonoBehaviour
     public static MapManager Instance;
 
     public List<Map> UnlockedMaps;
+    public Map SelectedMap;
 
     private void Awake()
     {

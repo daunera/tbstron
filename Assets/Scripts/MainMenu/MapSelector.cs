@@ -10,7 +10,7 @@ public class MapSelector : MonoBehaviour
 
     public Text MapNameText;
 
-    private Map Map;
+    public Map Map;
 
     internal CharacterSelectorWindow window;
 

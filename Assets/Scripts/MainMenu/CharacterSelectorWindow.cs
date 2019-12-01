@@ -106,6 +106,10 @@ public class CharacterSelectorWindow : MonoBehaviour
         int enemiesCount = CharacterSelectors.Count(x => (x.actor?.Id ?? 0) > 0);
         if (enemiesCount > 0)
         {
+            CharacterManager.Instance.SelectedCharacters = new List<Character>();
+            CharacterManager.Instance.SelectedCharacters.AddRange(CharacterSelectors.Where(c=>c.actor==null).Select(c=>c.character));
+            CharacterManager.Instance.SelectedCharacters.AddRange(CharacterSelectors.Where(c => (c.actor?.Id ?? 0) > 0).Select(c => c.character));
+            MapManager.Instance.SelectedMap = MapSelector.Map;
             SceneManager.LoadScene(2);
         }
     }
