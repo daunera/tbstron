@@ -67,7 +67,7 @@ public class BoardManager : MonoBehaviour
             pig.IsEnemy = false;
 
             Move move = instance.GetComponent<Move>();
-            setInputAxis(move, i);
+            setInputAxis(move, i - 1);
             instance.transform.SetParent(boardHolder);
         }
     }
