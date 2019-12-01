@@ -58,7 +58,8 @@ public class DBConnector : MonoBehaviour
                       "  'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
                       "  'name' TEXT NOT NULL, " +
                       "  'text' TEXT NOT NULL, " +
-                      "  'treshold' INTEGER NOT NULL " +
+                      "  'treshold' INTEGER NOT NULL, " +
+                      "  'AchievementType' INTEGER NOT NULL " +
                       ");";
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
@@ -79,36 +80,116 @@ public class DBConnector : MonoBehaviour
         }
 
 
-        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold) Values(@name, @text, @treshold)";
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
             command.Prepare();
-            command.Parameters.AddWithValue("@name", "Achievement1");
-            command.Parameters.AddWithValue("@text", "Achievement1 text");
+            command.Parameters.AddWithValue("@name", "Beginner Player");
+            command.Parameters.AddWithValue("@text", "Play a set amount of games");
             command.Parameters.AddWithValue("@treshold", 1);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.GamesPlayed);
             command.ExecuteNonQuery();
         }
 
-        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold) Values(@name, @text, @treshold)";
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
             command.Prepare();
-            command.Parameters.AddWithValue("@name", "Achievement2");
-            command.Parameters.AddWithValue("@text", "Achievement2 text");
+            command.Parameters.AddWithValue("@name", "Intermediate Player");
+            command.Parameters.AddWithValue("@text", "Play a set amount of games");
             command.Parameters.AddWithValue("@treshold", 10);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.GamesPlayed);
             command.ExecuteNonQuery();
         }
 
-        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold) Values(@name, @text, @treshold)";
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
             command.Prepare();
-            command.Parameters.AddWithValue("@name", "Achievement3");
-            command.Parameters.AddWithValue("@text", "Achievement3 text");
+            command.Parameters.AddWithValue("@name", "Advanced Player");
+            command.Parameters.AddWithValue("@text", "Play a set amount of games");
             command.Parameters.AddWithValue("@treshold", 100);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.GamesPlayed);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Beginner Champion");
+            command.Parameters.AddWithValue("@text", "Win a set amount of games");
+            command.Parameters.AddWithValue("@treshold", 1);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.GamesWon);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Intermediate Champion");
+            command.Parameters.AddWithValue("@text", "Win a set amount of games");
+            command.Parameters.AddWithValue("@treshold", 10);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.GamesWon);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Advanced Champion");
+            command.Parameters.AddWithValue("@text", "Win a set amount of games");
+            command.Parameters.AddWithValue("@treshold", 100);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.GamesWon);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Beginner Killer");
+            command.Parameters.AddWithValue("@text", "Kill a set amount of enemies");
+            command.Parameters.AddWithValue("@treshold", 1);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.EnemiesSlain);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Intermediate Killer");
+            command.Parameters.AddWithValue("@text", "Kill a set amount of enemies");
+            command.Parameters.AddWithValue("@treshold", 10);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.EnemiesSlain);
+            command.ExecuteNonQuery();
+        }
+
+        querry = $"INSERT INTO {Achievement.TableName} (Name, Text, Treshold, AchievementType)" +
+            $" Values(@name, @text, @treshold, @achievementtype)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "Advanced Killer");
+            command.Parameters.AddWithValue("@text", "Kill a set amount of enemies");
+            command.Parameters.AddWithValue("@treshold", 100);
+            command.Parameters.AddWithValue("@achievementtype", enAchievementType.EnemiesSlain);
             command.ExecuteNonQuery();
         }
     }
+
+
 
     private void CreateCharacters(SQLiteConnection connection)
     {
@@ -263,6 +344,16 @@ public class DBConnector : MonoBehaviour
             connection.Open();
 
             PlayerManager.Instance.Player.RefreshUnlocks(connection);
+        }
+    }
+
+    internal static void Save()
+    {
+        using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+        {
+            connection.Open();
+
+            PlayerManager.Instance.Player.Save(connection);
         }
     }
 }

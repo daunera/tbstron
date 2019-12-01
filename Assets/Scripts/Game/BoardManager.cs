@@ -73,7 +73,7 @@ public class BoardManager : MonoBehaviour
 
             PlayerInGame pig = instance.transform.GetComponent<PlayerInGame>();
             pig.IsAlive = true;
-            pig.IsEnemy = false;
+            pig.IsEnemy = i != 0;
             players.Add(pig);
 
             Move move = instance.GetComponent<Move>();
@@ -180,13 +180,21 @@ public class BoardManager : MonoBehaviour
         else
         {
             obj.IsAlive = false;
-            if (!players[0].IsAlive)
+
+            if (obj.IsEnemy)
             {
-                GameManager.instance.GameOver(true);
+                PlayerManager.Instance.AchievementProgress(enAchievementType.EnemiesSlain);
+                if (players.Count(p => p.IsAlive) == 1)
+                {
+                    PlayerManager.Instance.AchievementProgress(enAchievementType.GamesWon);
+                    PlayerManager.Instance.AchievementProgress(enAchievementType.GamesPlayed);
+                    GameManager.instance.GameOver();
+                }               
             }
-            else if (players.Count(p => p.IsAlive) == 1)
+            else
             {
-                GameManager.instance.GameOver(false);
+                PlayerManager.Instance.AchievementProgress(enAchievementType.GamesPlayed);
+                GameManager.instance.GameOver();
             }
         }
     }

@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    internal void GameOver(bool isPlayerWon)
+    internal void GameOver()
     {
         SceneManager.LoadScene(1);
     }

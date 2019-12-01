@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -18,6 +19,14 @@ public class PlayerManager : MonoBehaviour
         else
         {
             Destroy(this);
+        }
+    }
+
+    public void AchievementProgress(enAchievementType type)
+    {
+        foreach (Achievement achievement in Player.Achievements.Where(x => x.AchievementType == type))
+        {
+            achievement.Progress++;
         }
     }
 }

@@ -3,6 +3,13 @@ using System.Data;
 using System.Data.SQLite;
 using UnityEngine;
 
+public enum enAchievementType
+{
+    GamesPlayed,
+    GamesWon,
+    EnemiesSlain
+}
+
 public class Achievement
 {
     public const string TableName = "Achievements_Template";
@@ -13,6 +20,7 @@ public class Achievement
     public string Text { get; set; }
     public int Progress { get; set; }
     public int Treshold { get; set; }
+    public enAchievementType AchievementType { get; set; }
 
     public string ProgressText { get { return Progress < Treshold ? $"{Progress} / {Treshold}" : "Completed"; } }
 
@@ -23,11 +31,12 @@ public class Achievement
         Text = Convert.ToString(row[nameof(Text)]);
         Progress = Convert.ToInt32(row[nameof(Progress)]);
         Treshold = Convert.ToInt32(row[nameof(Treshold)]);
+        AchievementType = (enAchievementType)Convert.ToInt32(row[nameof(AchievementType)]);
     }
 
     public void Save(SQLiteConnection connection, int playerId)
     {
-        string querry = $"Update {Achievement.TableName_Values} SET Progress = @progress  Where Id = @PlayerId AND Achievementid = @AchievementId";
+        string querry = $"Update {Achievement.TableName_Values} SET Progress = @progress  Where PlayerId = @PlayerId AND Achievementid = @AchievementId";
         using (SQLiteCommand command = new SQLiteCommand(querry, connection))
         {
             command.Prepare();           

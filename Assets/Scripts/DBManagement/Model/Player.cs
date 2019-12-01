@@ -125,15 +125,6 @@ public class Player
 
     public void Save(SQLiteConnection connection)
     {
-        string querry = $"Update {Player.TableName} SET Name = @name, Where Id = @Id";
-        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
-        {
-            command.Prepare();
-            command.Parameters.AddWithValue("@name", Name);
-            command.Parameters.AddWithValue("@Id", Id);
-            command.ExecuteNonQuery();
-        }
-
         foreach (Achievement achievement in Achievements)
         {
             achievement.Save(connection, Id);
