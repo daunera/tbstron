@@ -55,23 +55,21 @@ public class BoardManager : MonoBehaviour
 
     void PlayersAtRandom(List<Character> ch)
     {
-        var playerNum = 1;
-        ch.ForEach(character =>
+        for (int i = 0; i < ch.Count; i++)
         {
             GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
 
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
-            renderer.color = character.Color;
+            renderer.color = ch[i].Color;
 
             PlayerInGame pig = instance.transform.GetComponent<PlayerInGame>();
             pig.IsAlive = true;
             pig.IsEnemy = false;
 
             Move move = instance.GetComponent<Move>();
-            setInputAxis(move, playerNum);
+            setInputAxis(move, i);
             instance.transform.SetParent(boardHolder);
-            playerNum++;
-        });
+        }
     }
 
     void EnemyAtRandom(List<Character> ch, List<Enemy> enemy)
@@ -154,9 +152,7 @@ public class BoardManager : MonoBehaviour
                 else
                     break;
             }
-
         }
-
     }
 
     public void UpdateTile(GameObject obj, Vector3 targetVector)
