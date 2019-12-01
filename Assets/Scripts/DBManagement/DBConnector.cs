@@ -227,8 +227,8 @@ public class DBConnector : MonoBehaviour
         {
             command.Prepare();
             command.Parameters.AddWithValue("@name", "Basic Map");
-            command.Parameters.AddWithValue("@height", 50);
-            command.Parameters.AddWithValue("@width", 50);
+            command.Parameters.AddWithValue("@height", 20);
+            command.Parameters.AddWithValue("@width", 20);
             command.Parameters.AddWithValue("@achievementid", null);
             command.ExecuteNonQuery();
         }
@@ -240,7 +240,7 @@ public class DBConnector : MonoBehaviour
             command.Prepare();
             command.Parameters.AddWithValue("@name", "Basic Walls Map");
             command.Parameters.AddWithValue("@height", 50);
-            command.Parameters.AddWithValue("@width", 50);
+            command.Parameters.AddWithValue("@width", 100);
             command.Parameters.AddWithValue("@achievementid", null);
             command.ExecuteNonQuery();
         }

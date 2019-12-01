@@ -30,8 +30,10 @@ public class BoardManager : MonoBehaviour
         rows = map.Height + 2;
         columns = map.Width + 2;
         tiles = new TileBehaviour[columns, rows];
+        GameObject.Find("Main Camera").transform.position = new Vector3(columns / 2, rows / 2, -1);
 
         boardHolder = GameObject.Find("Board").transform;
+
 
         for (int x = 0; x < columns; x++)
         {
@@ -46,7 +48,6 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-
 
     private Vector3 RandomPosition()
     {
