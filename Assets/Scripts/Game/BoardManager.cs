@@ -67,7 +67,8 @@ public class BoardManager : MonoBehaviour
     {
         for (int i = 0; i < ch.Count; i++)
         {
-            GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
+            GameObject instance = Instantiate(player, new Vector3(10,10,0), Quaternion.identity);
+            //GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
             instance.transform.forward = new Vector3(0, 1, 0);
 
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
@@ -85,14 +86,15 @@ public class BoardManager : MonoBehaviour
     {
         for (int i = 0; i < ch.Count; i++)
         {
-            GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
+            GameObject instance = Instantiate(player, new Vector3(15,15,0), Quaternion.identity);
+            //GameObject instance = Instantiate(player, RandomPosition(), Quaternion.identity);
             instance.transform.forward = new Vector3(0, 1, 0);
 
             SpriteRenderer renderer = instance.transform.GetComponent<SpriteRenderer>();
             renderer.color = ch[i].Color;
 
             PlayerBehaviour playerBehaviour = instance.transform.GetComponent<PlayerBehaviour>();
-            playerBehaviour.Initialize(true, null, ch[i].Id, this);
+            playerBehaviour.Initialize(true, null, enemy[i].Id, this);
             players.Add(playerBehaviour);
 
             instance.transform.SetParent(playerHolderr);

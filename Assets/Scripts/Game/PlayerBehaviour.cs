@@ -54,6 +54,10 @@ public class PlayerBehaviour : MonoBehaviour
                 AiControl = new SurvivalAiControl(boardManager);
                 break;
 
+            case 3:
+                AiControl = new ChaserAiControl(boardManager);
+                break;
+
             default:
                 AiControl = new DummyAiControl();
                 break;

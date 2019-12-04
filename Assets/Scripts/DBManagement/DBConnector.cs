@@ -283,6 +283,15 @@ public class DBConnector : MonoBehaviour
             command.Parameters.AddWithValue("@achievementid", null);
             command.ExecuteNonQuery();
         }
+
+        querry = $"INSERT INTO {Enemy.TableName} (Name, achievementid) Values(@name, @achievementid)";
+        using (SQLiteCommand command = new SQLiteCommand(querry, connection))
+        {
+            command.Prepare();
+            command.Parameters.AddWithValue("@name", "ChaserAi");
+            command.Parameters.AddWithValue("@achievementid", null);
+            command.ExecuteNonQuery();
+        }
     }
 
     private void CreateMaps(SQLiteConnection connection)

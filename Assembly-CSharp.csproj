@@ -71,10 +71,14 @@
     <Compile Include="Assets\Scripts\DBManagement\Model\Map.cs" />
     <Compile Include="Assets\Scripts\DBManagement\Model\Player.cs" />
     <Compile Include="Assets\Scripts\Game\BoardManager.cs" />
+    <Compile Include="Assets\Scripts\Game\GameAi\ChaserAiControl.cs" />
     <Compile Include="Assets\Scripts\Game\GameAi\DummyAiControl.cs" />
     <Compile Include="Assets\Scripts\Game\GameAi\IAControl.cs" />
     <Compile Include="Assets\Scripts\Game\GameAi\ManualAiControl.cs" />
     <Compile Include="Assets\Scripts\Game\GameAi\SurvivalAiControl.cs" />
+    <Compile Include="Assets\Scripts\Game\Pathfinding\AGrid.cs" />
+    <Compile Include="Assets\Scripts\Game\Pathfinding\Node.cs" />
+    <Compile Include="Assets\Scripts\Game\Pathfinding\PathFinder.cs" />
     <Compile Include="Assets\Scripts\Game\PlayerBehaviour.cs" />
     <Compile Include="Assets\Scripts\Game\TileBehaviour.cs" />
     <Compile Include="Assets\Scripts\GameManagement\CharacterManager.cs" />
